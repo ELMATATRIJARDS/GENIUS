@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Memorama</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        :root {
+            --w: calc(70vw / 6);
+            --h: calc(70vh / 4);
+        }
+
+        * {
+            transition: all 0.5s;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+            -webkit-perspective: 1000;
+            background: powderblue;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: calibri;
+        }
+
+        div {
+            display: inline-block;
+        }
+
+        nav {
+            background-color: #3498db;
+            padding: 10px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .area-tarjeta,
+        .tarjeta,
+        .cara {
+            cursor: pointer;
+            width: var(--w);
+            min-width: 100px;
+            height: var(--h);
+        }
+
+        .tarjeta {
+            position: relative;
+            transform-style: preserve-3d;
+            animation: iniciar 5s;
+        }
+
+        .cara {
+            position: absolute;
+            backface-visibility: hidden;
+            box-shadow: inset 0 0 0 5px white;
+            font-size: 500%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .trasera {
+            background-color: lightcyan;
+            transform: rotateY(180deg);
+        }
+
+        .superior {
+            background: linear-gradient(orange, darkorange);
+        }
+
+        .nuevo-juego {
+            cursor: pointer;
+            background: linear-gradient(orange, darkorange);
+            padding: 20px;
+            border-radius: 50px;
+            border: white 5px solid;
+            font-size: 130%;
+        }
+
+        @keyframes iniciar {
+            20%, 90% {
+                transform: rotateY(180deg);
+            }
+
+            0%, 100% {
+                transform: rotateY(0deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Barra de Navegación -->
+    <nav>
+        <ul>
+            <li><a href="./index.html">Lectura</a></li>
+            <li><a href="./matematicas.html">Matemáticas</a></li>
+            <li><a href="./historia.html">Historia</a></li>
+            <li><a href="#ciencia-ficcion">Ciencia Ficción</a></li>
+            <li><a href="./juego.html">Memorama</a></li>
+        </ul>
+    </nav>
+
+    <!-- Resto del contenido -->
+    <div id="tablero"></div>
+    <br>
+    <div class="nuevo-juego" onclick="iniciarJuego()">Nuevo Juego</div>
+    <div id="puntuacion"></div>
+    <div id="tiempo"></div>
+
+    <!-- JS -->
+    <!-- parte lógica -->
+    <script>
+        let iconos = []
+        let selecciones = []
+        let errores = 0
+        let puntos = 0
+        let record = 0
+        let tiempoRestante = 180 // 3 minutos en segundos
+        let tiempoInterval
+
+        iniciarJuego()
+
+        function cargarIconos() {
+            iconos = [
+                '<i class="fas fa-star"></i>',
+                '<i class="far fa-star"></i>',
+                '<i class="fas fa-star-of-life"></i>',
+                '<i class="fas fa-star-and-crescent"></i>',
+                '<i class="fab fa-old-republic"></i>',
+                '<i class="fab fa-galactic-republic"></i>',
+                '<i class="fas fa-sun"></i>',
+                '<i class="fas fa-stroopwafel"></i>',
+                '<i class="fas fa-dice"></i>',
+                '<i class="fas fa-chess-knight"></i>',
+                '<i class="fas fa-chess"></i>',
+                '<i class="fas fa-dice-d20"></i>',
+            ]
+        }
+
+        function iniciarJuego() {
+            cargarIconos()
+            reiniciarJuego()
+            generarTablero()
+            iniciarContadores()
+        }
+
+        function reiniciarJuego() {
+            selecciones = []
+            errores = 0
+            puntos = 0
+            tiempoRestante = 180
+            detenerContadores()
+            actualizarPuntuacion()
+            actualizarTiempo()
+            limpiarTablero()
+        }
+
+        function limpiarTablero() {
+            document.getElementById("tablero").innerHTML = "";
+        }
+
+        function iniciarContadores() {
+            tiempoInterval = setInterval(function () {
+                tiempoRestante--;
+                actualizarTiempo();
+
+                if (tiempoRestante <= 0 || errores >= 15) {
+                    detenerContadores();
+                    mostrarGameOver();
+                }
+            }, 1000);
+        }
+
+        function detenerContadores() {
+            clearInterval(tiempoInterval);
+        }
+
+        function mostrarGameOver() {
+            alert(`Game Over\nTu puntuación es: ${puntos}`);
+            if (puntos > record) {
+                record = puntos;
+                alert(`¡Nuevo récord!: ${record} puntos`);
+            }
+            reiniciarJuego();
+        }
+
+        function actualizarPuntuacion() {
+            document.getElementById("puntuacion").innerText = `Puntuación: ${puntos}`;
+        }
+
+        function actualizarTiempo() {
+            document.getElementById("tiempo").innerText = `Tiempo restante: ${tiempoRestante} segundos`;
+        }
+
+        function generarTablero() {
+            limpiarTablero();
+            cargarIconos()
+            selecciones = []
+            let tablero = document.getElementById("tablero")
+            let tarjetas = []
+            for (let i = 0; i < 24; i++) {
+                tarjetas.push(`
+                    <div class="area-tarjeta" onclick="seleccionarTarjeta(${i})">
+                        <div class="tarjeta" id="tarjeta${i}">
+                            <div class="cara trasera" id="trasera${i}">
+                                ${iconos[0]}
+                            </div>
+                            <div class="cara superior">
+                                <i class="far fa-question-circle"></i>
+                            </div>
+                        </div>
+                    </div>        
+                `)
+                if (i % 2 == 1) {
+                    iconos.splice(0, 1)
+                }
+            }
+            tarjetas.sort(() => Math.random() - 0.5)
+            tablero.innerHTML = tarjetas.join(" ")
+        }
+
+        function seleccionarTarjeta(i) {
+            let tarjeta = document.getElementById("tarjeta" + i)
+            if (tarjeta.style.transform != "rotateY(180deg)") {
+                tarjeta.style.transform = "rotateY(180deg)"
+                selecciones.push(i)
+                if (selecciones.length == 2) {
+                    deseleccionar(selecciones)
+                    selecciones = []
+                }
+            }
+        }
+
+        function deseleccionar(selecciones) {
+            setTimeout(() => {
+                let trasera1 = document.getElementById("trasera" + selecciones[0])
+                let trasera2 = document.getElementById("trasera" + selecciones[1])
+                if (trasera1.innerHTML != trasera2.innerHTML) {
+                    let tarjeta1 = document.getElementById("tarjeta" + selecciones[0])
+                    let tarjeta2 = document.getElementById("tarjeta" + selecciones[1])
+                    tarjeta1.style.transform = "rotateY(0deg)"
+                    tarjeta2.style.transform = "rotateY(0deg)"
+                    errores++
+                } else {
+                    trasera1.style.background = "plum"
+                    trasera2.style.background = "plum"
+                    puntos += 15 // Puntos por pareja encontrada
+                }
+
+                actualizarPuntuacion()
+
+                if (puntos >= record) {
+                    record = puntos
+                }
+
+                if (document.querySelectorAll('.plum').length === 24) {
+                    detenerContadores()
+                    alert(`¡Felicidades! Has completado el juego. Puntuación: ${puntos}`)
+                    reiniciarJuego()
+                }
+            }, 1000);
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,135 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #0008ff;
+}
+
+header {
+  background-color: #3498db;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-family: 'Georgia', serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo-section img {
+  max-height: 100px; /* Ajusta la altura máxima del logo según tu preferencia */
+  margin-right: auto; /* Coloca el logo a la derecha */
+}
+
+.title-section {
+  text-align: center;
+  flex-grow: 1; /* Hace que el título ocupe el espacio restante */
+}
+
+nav {
+  background-color: #2c3e50;
+  padding: 10px;
+  display: flex;
+  justify-content: flex-end;
+  transition: background-color 0.3s ease;
+}
+
+nav:hover {
+  background-color: #007cf9; /* Cambia el color al pasar el mouse sobre la barra de navegación */
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+nav li {
+  margin-right: 15px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif;
+  transition: color 0.3s ease; /* Agrega una transición suave para el cambio de color del texto */
+}
+
+nav a:hover {
+  color: #f39c12; /* Cambia el color del texto al pasar el mouse sobre cualquier enlace */
+}
+
+nav li:hover {
+  background-color: #34495e; /* Cambia el color de fondo al pasar el mouse sobre cualquier enlace */
+}
+
+
+
+main {
+  margin: 20px;
+  flex-grow: 1;
+  background-color: #00ffcc; /* Color de fondo para la sección principal */
+}
+
+.book-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.book {
+  border: 3px solid #ffee00; /* Cambia el color de las líneas de los cuadros a amarillo */
+  padding: 10px;
+  margin: 10px;
+  text-align: center;
+  width: calc(33.33% - 20px);
+  box-sizing: border-box;
+}
+
+.book:hover {
+  transform: scale(1.1); /* Aumenta el tamaño al poner el mouse sobre el libro */
+  transition: transform 0.3s ease; /* Agrega una transición suave */
+}
+
+.book img {
+  max-width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease; /* Aplica la transición también a la imagen */
+}
+
+a {
+  display: block;
+  background-color: #2ecc71;
+  color: #fff;
+  padding: 10px;
+  text-decoration: none;
+  margin-top: 10px;
+}
+
+a:hover {
+  background-color: #27ae60;
+}
+
+footer {
+  background-color: #3498db;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+}
